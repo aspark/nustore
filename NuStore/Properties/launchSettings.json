@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NuStore": {
+      "commandName": "Project",
+      "commandLineArgs": "--dir=\"e:/nustore\" --deps=\"e:/nustore/test.deps.json\""
+    }
+  }
+}
