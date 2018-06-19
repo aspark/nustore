@@ -6,6 +6,7 @@ using CommandLine.Text;
 
 namespace NuStore.Common
 {
+    //[Verb("restore", HelpText="restore the packages in deps")]
     internal class RestoreOptions
     {
         [Option('p', "deps", HelpText ="deps file. default is *.deps.json in current directory")]
@@ -14,7 +15,7 @@ namespace NuStore.Common
         [Option('d', "dir", HelpText = "diretory packages stored(typically at /usr/local/share/dotnet/store on macOS/Linux and C:/Program Files/dotnet/store on Windows).")]
         public string Directory { get; set; }
 
-        [Option('f', "force", HelpText = "override exists packages")]
+        [Option('f', "force", HelpText = "override exists packages, default is false")]
         public bool ForceOverride { get; set; }
 
         [Option("nuget", HelpText = "set nuget resouce api url. default: https://api.nuget.org/v3/index.json")]
