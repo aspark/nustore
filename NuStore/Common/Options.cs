@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CommandLine;
+using CommandLine.Text;
 
 namespace NuStore.Common
 {
@@ -25,8 +26,22 @@ namespace NuStore.Common
         [Option('s', "special", HelpText = "restore special packages, support regex. seprate by semicolon for mutiple")]
         public string Special { get; set; }
 
+        //public string Framework { get; set; }
+
+        //public string Platform { get; set; }
+
         //[]
         //public bool Minify { get; set; }
+
+        //[Usage]
+        //public static IEnumerable<Example> Examples
+        //{
+        //    get
+        //    {
+        //        yield return new Example("skip default package", new RestoreOptions { Exclude = "^microsoft.*;^System.*" });
+        //        yield return new Example("only restore the special package", new RestoreOptions { Special = "Microsoft\\.Extensions.Logging", ForceOverride = true });
+        //    }
+        //}
     }
 
     //[Verb("restore", HelpText ="")]

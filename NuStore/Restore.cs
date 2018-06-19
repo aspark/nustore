@@ -28,6 +28,8 @@ namespace NuStore
         {
             _options = options;
 
+            EnsureDepsFileName();
+
             _http = new HttpClient() { Timeout = TimeSpan.FromSeconds(30) };
         }
 
@@ -60,7 +62,7 @@ namespace NuStore
             }
         }
 
-        private string GetDepsFileName()
+        private string EnsureDepsFileName()
         {
             string fileName = "";
             if (!string.IsNullOrWhiteSpace(_options?.DepsFile))
@@ -78,7 +80,7 @@ namespace NuStore
 
             if (string.IsNullOrEmpty(fileName))
             {
-                throw new FileNotFoundException("Can't file deps file.");
+                throw new FileNotFoundException("Can't find deps file.");
             }
 
             return fileName;
@@ -217,7 +219,7 @@ namespace NuStore
             MessageHelper.Warning($"Retore packages to {fwFolder}");
 
             var count = 0;
-            var file = GetDepsFileName();
+            var file = EnsureDepsFileName();
             var deps = JsonConvert.DeserializeObject<ProjectDeps>(File.ReadAllText(file));
             foreach (var item in deps.Libraries.AsParallel())
             {
