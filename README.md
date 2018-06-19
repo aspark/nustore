@@ -17,8 +17,8 @@ get help info via `nustore --help`
 
 ## options
 
-opt | desc
---- | ---
+ opt           | desc
+-------------- | -----
 `-p` `--deps` | deps file. default is *.deps.json in current directory
 `-d` `--dir` | diretory packages stored(typically at /usr/local/share/dotnet/store on macOS/Linux and C:/Program Files/dotnet/store on Windows).
 `-f` `--force` | override exists packages
