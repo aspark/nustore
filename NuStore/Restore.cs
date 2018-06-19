@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,9 +16,14 @@ namespace NuStore
 {
     internal class RestoreCommand
     {
+        static RestoreCommand()
+        {
+            ServicePointManager.DefaultConnectionLimit = 100;
+        }
+
         private RestoreOptions _options = null;
         private HttpClient _http = null;
-
+        //HttpClientFactory
         public RestoreCommand(RestoreOptions options)
         {
             _options = options;
@@ -106,12 +113,12 @@ namespace NuStore
             return string.Format("{0}/{1}/{2}/{1}.{2}.nupkg", _packageContentHost, id.ToLower(), version.ToLower());
         }
 
-        private async Task DownloadPackage(string name, string version, string pkgFolder)
+        private async Task<bool> DownloadPackage(string name, string version, string pkgFolder)
         {
             if (Directory.Exists(pkgFolder) && !_options.ForceOverride)
             {
                 MessageHelper.Warning($"Skip override:{pkgFolder}");
-                return;
+                return false;
             }
 
             var url = GetPackageContentUrl(name, version);
@@ -123,17 +130,19 @@ namespace NuStore
                 //Zip
                 using (var zip = new ZipArchive(pkg, ZipArchiveMode.Read, true))
                 {
-                    var hasFind = false;
+                    var hasLibs = false;
+                    var hasSave = false;
                     foreach (var entry in zip.Entries)
                     {
+                        hasLibs = true;
                         if (entry.FullName.StartsWith("lib/"))
                         {
-                            hasFind = true;
-
+                        
                             if (entry.Length == 0)
                             {
                                 continue;
                             }
+
 
                             var fileName = Path.Combine(pkgFolder, entry.FullName);
                             if (File.Exists(fileName) && !_options.ForceOverride)
@@ -142,17 +151,19 @@ namespace NuStore
                                 continue;
                             }
 
+                            hasSave = true;
                             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
-
                             entry.ExtractToFile(fileName, true);//_options.ForceOverride
                         }
                     }
 
-                    if (hasFind)
+                    if(hasSave)
                     {
-                        MessageHelper.Info($"Save {name}[{version}] to {pkgFolder}");
+                        MessageHelper.Successs($"Save {name}[{version}] to {pkgFolder}");
+
+                        return true;
                     }
-                    else
+                    else if(!hasLibs)
                     {
                         MessageHelper.Error($"Can't find lib entry in {Path.GetFileName(url)}");
                     }
@@ -162,6 +173,8 @@ namespace NuStore
             {
                 MessageHelper.Error("Restore failed:"+ ex.Message);
             }
+
+            return false;
         }
 
         private (string name, string version) ParsePackageName(string packageName)
@@ -171,6 +184,31 @@ namespace NuStore
             return (packageName.Substring(0, index), packageName.Substring(index + 1));
         }
 
+        private ConcurrentDictionary<string, Regex[]> _dicReg = new ConcurrentDictionary<string, Regex[]>();
+        private bool IsMatch(string regString, string value)
+        {
+            if(!string.IsNullOrWhiteSpace(regString))
+            {
+                var regList = _dicReg.GetOrAdd(regString, str => {
+                    return regString
+                    .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => new Regex(s, RegexOptions.IgnoreCase)).ToArray();
+                });
+
+                return regList.Any(r => r.IsMatch(value));
+            }
+
+            return false;
+        }
+
+        private bool NeedDownload(string package)
+        {
+            if (!string.IsNullOrWhiteSpace(_options.Special) && IsMatch(_options.Special, package))
+                return true;
+
+            return IsMatch(_options.Exclude, package) == false;
+        }
+
         public async Task Execute()
         {
             //x86 x64
@@ -178,26 +216,31 @@ namespace NuStore
             var fwFolder = Path.Combine(GetStoreDirctory(), $"{bit}/netcoreapp2.0");
             MessageHelper.Warning($"Retore packages to {fwFolder}");
 
+            var count = 0;
             var file = GetDepsFileName();
             var deps = JsonConvert.DeserializeObject<ProjectDeps>(File.ReadAllText(file));
             foreach (var item in deps.Libraries.AsParallel())
             {
-                if (!item.Value.Serviceable 
+                if (!item.Value.Serviceable
                     || !string.Equals(item.Value.Type, "package", StringComparison.InvariantCultureIgnoreCase)
-                    || (!string.IsNullOrWhiteSpace(_options.Skip) && Regex.IsMatch(item.Key, _options.Skip)))
+                    ||!NeedDownload(item.Key))
                 {
-                    MessageHelper.Info($"Skip restore:{item.Key}");
+                    MessageHelper.Warning($"Not Package Skip restore:{item.Key}");
                     continue;
                 }
+
 
                 (string name, string version) = ParsePackageName(item.Key);
 
                 MessageHelper.Info($"Begin restore package:{name}[{version}]");
 
-                await DownloadPackage(name, version, Path.Combine(fwFolder, item.Value.Path));
+                if(await DownloadPackage(name, version, Path.Combine(fwFolder, item.Value.Path)))
+                {
+                    count++;
+                }
             }
 
-            MessageHelper.Info("Complete restore.");
+            MessageHelper.Successs($"Complete Restore {count} packages.");
         }
     }
 }

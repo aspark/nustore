@@ -10,7 +10,11 @@ namespace NuStore
         {
             Parser.Default.ParseArguments<RestoreOptions>(args).WithParsed(opt => {
                 new RestoreCommand(opt).Execute().Wait();
-            });
+            }).WithNotParsed(err=> { });
+
+#if DEBUG
+            Console.ReadKey();
+#endif
         }
     }
 }

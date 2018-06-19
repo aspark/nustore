@@ -31,5 +31,12 @@ namespace NuStore.Common
         {
             Console.WriteLine(msg, args);
         }
+
+        internal static void Successs(string msg, params object[] args)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(msg, args);
+            Console.ForegroundColor = _originForegroundColor;
+        }
     }
 }
