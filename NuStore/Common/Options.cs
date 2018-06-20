@@ -6,7 +6,7 @@ using CommandLine.Text;
 
 namespace NuStore.Common
 {
-    //[Verb("restore", HelpText="restore the packages in deps")]
+    [Verb("restore", HelpText="restore the packages declared in deps file")]
     internal class RestoreOptions
     {
         [Option('p', "deps", HelpText ="deps file. default is *.deps.json in current directory")]
@@ -30,24 +30,22 @@ namespace NuStore.Common
         //public string Framework { get; set; }
 
         //public string Platform { get; set; }
-
-        //[]
-        //public bool Minify { get; set; }
-
-        //[Usage]
-        //public static IEnumerable<Example> Examples
-        //{
-        //    get
-        //    {
-        //        yield return new Example("skip default package", new RestoreOptions { Exclude = "^microsoft.*;^System.*" });
-        //        yield return new Example("only restore the special package", new RestoreOptions { Special = "Microsoft\\.Extensions.Logging", ForceOverride = true });
-        //    }
-        //}
+        
+        [Usage]
+        public static IEnumerable<Example> Examples
+        {
+            get
+            {
+                yield return new Example("Use test.json to resolve deps, and save packages to d:/packages", new RestoreOptions { DepsFile = "test.json", Directory = "c:/packages" });
+                yield return new Example("Skip special package", new RestoreOptions { Exclude = "^microsoft.*;^System.*" });
+                yield return new Example("Only restore the special package", new RestoreOptions { Special = "Microsoft\\.Extensions.Logging", ForceOverride = true });
+            }
+        }
     }
 
-    //[Verb("restore", HelpText ="")]
-    //public class Restore
-    //{
-
-    //}
+    [Verb("minify", HelpText = "Minify the publish package(delete the packages which not hosted in nuget)")]
+    public class MinifyOptions
+    {
+        //todo
+    }
 }

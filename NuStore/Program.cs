@@ -18,27 +18,46 @@ namespace NuStore
                 args = new[] { "--help" };
             }
 
-            var parserResult = Parser.Default.ParseArguments<RestoreOptions>(args);
+            var parserResult = Parser.Default.ParseArguments<RestoreOptions, MinifyOptions>(args);
 
-            parserResult.WithParsed(opt =>
-            {
-                try
-                {
-                    new RestoreCommand(opt).Execute().Wait();
-                }
-                catch (Exception ex)
-                {
-                    MessageHelper.Error(ex.GetMessage());
-                    MessageHelper.Warning("Use \"nustore --help\" for help info...");
-                }
-            }).WithNotParsed(errs =>
-            {
-                
-            });
+            parserResult.MapResult<RestoreOptions, MinifyOptions, object>(
+                opts => Restore(opts),
+                opts => Minify(opts),
+                errs => "");
+
+            //parserResult.WithParsed(opts =>
+            //{
+            //    Restore(opts);
+            //}).WithNotParsed(errs =>
+            //{
+
+            //});
 
 #if DEBUG
             Console.ReadKey();
 #endif
+        }
+
+        private static object Restore(RestoreOptions opts)
+        {
+            try
+            {
+                new RestoreCommand(opts).Execute().Wait();
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.Error(ex.GetMessage());
+                MessageHelper.Warning("Use \"nustore --help\" for help info...");
+            }
+
+            return null;
+        }
+
+        private static object Minify(MinifyOptions opts)
+        {
+            MessageHelper.Error("minify publish package developing...");
+
+            return null;
         }
 
         private static void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)

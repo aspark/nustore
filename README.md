@@ -4,18 +4,26 @@ Download nuget packages which declared in the *.deps.json, and save it to store 
 ## Install
 	dotnet tool install -g NuStore
 
+## Update
+	dotnet tool update -g Nustore
+
 ## Uninstall
 	dotnet tool uninstall -g NuStore
 
 ## Usage
-By default `nustore` will load the deps file from current folder, 
+By default `nustore restore` will load the deps file from current folder, 
 and save the packages to /usr/local/share/dotnet/store 
 on macOS/Linux and C:/Program Files/dotnet/store on Windows
 
-	nustore [options]
+	nustore verb [options]
 get help info via `nustore --help`
 
-## options
+
+## verbs
+1. restore
+2. minify
+
+## restore options
 
  opt           | desc
 -------------- | -----
@@ -26,3 +34,9 @@ get help info via `nustore --help`
 `-e` `--exclude` | skip packages, support regex. seprate by semicolon for mutiple
 `-s` `--special` | restore special packages, support regex. seprate by semicolon for mutiple
 `--help` | get help info
+
+### example
+
+Use e:/nustore/test.deps.json file to restore packages to e:/nustore. exclude all packages which start with microsoft
+
+	nustore restore --dir="e:/nustore" --deps="e:/nustore/test.deps.json" --exclude="^microsoft.*;^System.*" -s "Microsoft\.Extensions.Logging"

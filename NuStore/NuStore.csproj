@@ -6,7 +6,7 @@
 	<PackAsTool>true</PackAsTool>
 	<ToolCommandName>nustore</ToolCommandName>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <PackageProjectUrl>https://github.com/aspark/nustore</PackageProjectUrl>
     <Description>NuStore download nuget packages which declared in the *.deps.json, and save to store folder, for minify .net core publish size
 

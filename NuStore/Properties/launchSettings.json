@@ -2,7 +2,7 @@
   "profiles": {
     "NuStore": {
       "commandName": "Project",
-      "commandLineArgs": "--dir=\"e:/nustore\" --deps=\"e:/nustore/test.deps.json\" --exclude=\"^microsoft.*;^System.*\" -s \"Microsoft\\.Extensions.Logging\""
+      "commandLineArgs": "restore --dir=\"e:/nustore\" --deps=\"e:/nustore/test.deps.json\" --exclude=\"^microsoft.*;^System.*\" -s \"Microsoft\\.Extensions.Logging\""
     }
   }
 }
