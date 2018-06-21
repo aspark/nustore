@@ -11,12 +11,14 @@ Download nuget packages which declared in the *.deps.json, and save it to store 
 	dotnet tool uninstall -g NuStore
 
 ## Usage
+	nustore verb [options]
 By default `nustore restore` will load the deps file from current folder, 
 and save the packages to /usr/local/share/dotnet/store 
 on macOS/Linux and C:/Program Files/dotnet/store on Windows
 
-	nustore verb [options]
 get help info via `nustore --help`
+
+> dotnet core installed path may be diffrent on linux, for example it may be /usr/share/dotnet on centos7
 
 
 ## verbs

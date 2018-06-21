@@ -122,11 +122,11 @@ namespace NuStore
             return string.Format("{0}/{1}/{2}/{1}.{2}.nupkg", _packageContentHost, id.ToLower(), version.ToLower());
         }
 
-        private async Task<bool> DownloadPackage(string name, string version, string pkgFolder)
+        private async Task<bool> DownloadPackage(string name, string version, string libFolder)
         {
-            if (Directory.Exists(pkgFolder) && !_options.ForceOverride)
+            if (Directory.Exists(libFolder) && !_options.ForceOverride)
             {
-                MessageHelper.Warning($"Skip override:{pkgFolder}");
+                MessageHelper.Warning($"Skip override:{libFolder}");
                 return false;
             }
 
@@ -153,7 +153,7 @@ namespace NuStore
                             }
 
 
-                            var fileName = Path.Combine(pkgFolder, entry.FullName);
+                            var fileName = Path.Combine(libFolder, entry.FullName);
                             if (File.Exists(fileName) && !_options.ForceOverride)
                             {
                                 MessageHelper.Warning($"Skip override:{entry.FullName}");
@@ -168,7 +168,7 @@ namespace NuStore
 
                     if(hasSave)
                     {
-                        MessageHelper.Successs($"Save {name}[{version}] to {pkgFolder}");
+                        MessageHelper.Successs($"Save {name}[{version}] to {libFolder}");
 
                         return true;
                     }

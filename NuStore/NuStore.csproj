@@ -8,12 +8,12 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Version>1.0.4</Version>
     <PackageProjectUrl>https://github.com/aspark/nustore</PackageProjectUrl>
-    <Description>NuStore download nuget packages which declared in the *.deps.json, and save to store folder, for minify .net core publish size
-
-</Description>
+    <Title>NuStore</Title>
+    <Description>NuStore download nuget packages which declared in the *.deps.json, and save to store folder, for minify .net core publish size</Description>
     <PackageTags>deps nuget package store folder</PackageTags>
     <RepositoryUrl>https://github.com/aspark/nustore</RepositoryUrl>
     <Authors>aspark</Authors>
+    <PackageId>nustore</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
