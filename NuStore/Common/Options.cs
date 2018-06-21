@@ -30,7 +30,7 @@ namespace NuStore.Common
         [Option("runtime", HelpText = ".net core runtime version, the defaut value set by deps file, for excample netcoreapp2.0/netcoreapp2.1")]
         public string Runtime { get; set; }
 
-        [Option("arch", HelpText="x64/x86, by defalut this value is resolved from platform attribute which declared in deps file ")]
+        [Option("arch", HelpText="x64/x86, by defalut this value is resolved from platform attribute which declared in deps file")]
         public string Architecture { get; set; }
 
         [Option('v', "verbosity", HelpText = "show detail log")]
