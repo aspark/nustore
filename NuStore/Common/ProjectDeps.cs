@@ -6,7 +6,21 @@ namespace NuStore.Common
 {
     internal class ProjectDeps
     {
+        public RuntimeTarget RuntimeTarget { get; set; }
+
+        public CompilationOptions CompilationOptions { get; set; }
+
         public Dictionary<string, ProjectLibrary> Libraries { get; set; }
+    }
+
+    internal class RuntimeTarget
+    {
+        public string Name { get; set; }
+    }
+
+    internal class CompilationOptions
+    {
+        public string Platform { get; set; }
     }
 
     internal class ProjectLibrary

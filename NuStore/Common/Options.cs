@@ -27,10 +27,15 @@ namespace NuStore.Common
         [Option('s', "special", HelpText = "restore special packages, support regex. seprate by semicolon for mutiple")]
         public string Special { get; set; }
 
-        //public string Framework { get; set; }
+        [Option("runtime", HelpText = ".net core runtime version, the defaut value set by deps file, for excample netcoreapp2.0/netcoreapp2.1")]
+        public string Runtime { get; set; }
 
-        //public string Platform { get; set; }
-        
+        [Option("arch", HelpText="x64/x86, by defalut this value is resolved from platform attribute which declared in deps file ")]
+        public string Architecture { get; set; }
+
+        [Option('v', "verbosity", HelpText = "show detail log")]
+        public bool Verbosity { get; set; }
+
         [Usage]
         public static IEnumerable<Example> Examples
         {

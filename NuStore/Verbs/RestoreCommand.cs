@@ -62,6 +62,13 @@ namespace NuStore
             }
         }
 
+        private string GetPackageDirctory(ProjectDeps deps)
+        {
+            (string arch, string runtime) = ParseRuntimeInfo(deps);
+
+            return Path.Combine(GetStoreDirctory(), $"{arch}/{runtime}");
+        }
+
         private string EnsureDepsFileName()
         {
             string fileName = "";
@@ -211,32 +218,90 @@ namespace NuStore
             return IsMatch(_options.Exclude, package) == false;
         }
 
+        Regex _regRuntime = new Regex(@"\.?(?<name>\w+)\W*Version=v(?<ver>[\d\.]*)", RegexOptions.IgnoreCase);
+        private (string arch, string runtime) ParseRuntimeInfo(ProjectDeps deps)
+        {
+            var arch = _options.Architecture;
+            if(string.IsNullOrWhiteSpace(arch))
+            {
+                switch((deps?.CompilationOptions?.Platform??"").ToLower())
+                {
+                    //case "anycpu":
+                    //    arch = Environment.Is64BitOperatingSystem ? "x64" : "x86";
+                    //    break;
+                    case "anycpu32bitpreferred":
+                        arch = "x86";
+                        break;
+                    case "x86":
+                        arch = "x86";
+                        break;
+                    case "x64":
+                        arch = "x64";
+                        break;
+                    //case "arm":
+                    //    arch = "x64";
+                    //    break;
+                    //case "itanium":
+                    //    arch = "x64";
+                    //    break;
+                    //default:
+                    //    throw new NotSupportedException("");
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(arch))
+                arch = Environment.Is64BitOperatingSystem ? "x64" : "x86";
+
+
+            var runtime = _options.Runtime;
+            if(string.IsNullOrWhiteSpace(runtime))
+            {
+                var name = deps?.RuntimeTarget?.Name;
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    var m = _regRuntime.Match(name);
+                    if (m.Success)
+                    {
+                        runtime = (m.Groups["name"].Value + m.Groups["ver"].Value).ToLower();
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(runtime))
+                runtime = "netcoreapp2.0";
+
+
+            return (arch, runtime);
+        }
+
         public async Task Execute()
         {
-            //x86 x64
-            var bit = "x64";// ent.Is64BitOperatingSystem ? "x64" : "x86";
-            var fwFolder = Path.Combine(GetStoreDirctory(), $"{bit}/netcoreapp2.0");
-            MessageHelper.Warning($"Retore packages to {fwFolder}");
-
-            var count = 0;
             var file = EnsureDepsFileName();
             var deps = JsonConvert.DeserializeObject<ProjectDeps>(File.ReadAllText(file));
+            
+            (string arch, string runtime) = ParseRuntimeInfo(deps);
+
+            var pkgFolder = GetPackageDirctory(deps);
+            MessageHelper.Warning($"Retore packages to {pkgFolder}");
+
+            var count = 0;
             foreach (var item in deps.Libraries.AsParallel())
             {
                 if (!item.Value.Serviceable
                     || !string.Equals(item.Value.Type, "package", StringComparison.InvariantCultureIgnoreCase)
                     ||!NeedDownload(item.Key))
                 {
-                    MessageHelper.Warning($"Not Package Skip restore:{item.Key}");
+                    if (_options.Verbosity)
+                        MessageHelper.Warning($"Not serviceable, Skip restore:{item.Key}");
                     continue;
                 }
 
-
                 (string name, string version) = ParsePackageName(item.Key);
 
-                MessageHelper.Info($"Begin restore package:{name}[{version}]");
+                if(_options.Verbosity)
+                    MessageHelper.Info($"Begin restore package:{name}[{version}]");
 
-                if(await DownloadPackage(name, version, Path.Combine(fwFolder, item.Value.Path)))
+                if(await DownloadPackage(name, version, Path.Combine(pkgFolder, item.Value.Path)))
                 {
                     count++;
                 }
