@@ -48,6 +48,12 @@ namespace NuStore.Common
         }
     }
 
+    //[Verb("fallback", HelpText = "fullfill fallback folder with special version packages")]
+    //public class FallbackOptions
+    //{
+
+    //}
+
     [Verb("minify", HelpText = "Minify the publish package(delete the packages which not hosted in nuget)")]
     public class MinifyOptions
     {

@@ -144,16 +144,15 @@ namespace NuStore
                     foreach (var entry in zip.Entries)
                     {
                         hasLibs = true;
-                        if (entry.FullName.StartsWith("lib/"))
+                        var fileName = entry.FullName.ToLower();
+                        if (fileName.StartsWith("lib/") || fileName.StartsWith("runtimes/"))
                         {
-                        
                             if (entry.Length == 0)
                             {
                                 continue;
                             }
 
-
-                            var fileName = Path.Combine(libFolder, entry.FullName);
+                            fileName = Path.Combine(libFolder, fileName);
                             if (File.Exists(fileName) && !_options.ForceOverride)
                             {
                                 MessageHelper.Warning($"Skip override:{entry.FullName}");
@@ -212,8 +211,13 @@ namespace NuStore
 
         private bool NeedDownload(string package)
         {
-            if (!string.IsNullOrWhiteSpace(_options.Special) && IsMatch(_options.Special, package))
-                return true;
+            if (!string.IsNullOrWhiteSpace(_options.Special))
+            {
+                if(IsMatch(_options.Special, package))
+                      return true;
+
+                return false;
+            }
 
             return IsMatch(_options.Exclude, package) == false;
         }
