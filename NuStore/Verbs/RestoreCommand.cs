@@ -144,15 +144,15 @@ namespace NuStore
                     foreach (var entry in zip.Entries)
                     {
                         hasLibs = true;
-                        var fileName = entry.FullName.ToLower();
-                        if (fileName.StartsWith("lib/") || fileName.StartsWith("runtimes/"))
+                        var tmpName = entry.FullName.ToLower();
+                        if (tmpName.StartsWith("lib/") || tmpName.StartsWith("runtimes/"))
                         {
                             if (entry.Length == 0)
                             {
                                 continue;
                             }
 
-                            fileName = Path.Combine(libFolder, fileName);
+                            var fileName = Path.Combine(libFolder, entry.FullName);
                             if (File.Exists(fileName) && !_options.ForceOverride)
                             {
                                 MessageHelper.Warning($"Skip override:{entry.FullName}");
