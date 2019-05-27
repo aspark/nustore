@@ -33,6 +33,9 @@ namespace NuStore.Common
         [Option("arch", HelpText="x64/x86, by default this value is resolved from platform attribute which declared in deps file")]
         public string Architecture { get; set; }
 
+        [Option("flatten", HelpText = "restore files directly onto path/package.dll instead of restoring in nested folders (eg. path/x64/netcoreapp2.0/package/1.2.0/lib/netcoreapp2.0/package.dll)")]
+        public bool Flatten { get; set; }
+
         [Option('v', "verbosity", HelpText = "show detailed log")]
         public bool Verbosity { get; set; }
 

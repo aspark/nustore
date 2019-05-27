@@ -124,7 +124,7 @@ namespace NuStore
 
         private async Task<bool> DownloadPackage(string name, string version, string libFolder)
         {
-            if (Directory.Exists(libFolder) && !_options.ForceOverride)
+            if (!_options.Flatten && Directory.Exists(libFolder) && !_options.ForceOverride)
             {
                 MessageHelper.Warning($"Skip override:{libFolder}");
                 return false;
@@ -152,7 +152,7 @@ namespace NuStore
                                 continue;
                             }
 
-                            var fileName = Path.Combine(libFolder, entry.FullName);
+                            var fileName = Path.Combine(libFolder, entry.Name);
                             if (File.Exists(fileName) && !_options.ForceOverride)
                             {
                                 MessageHelper.Warning($"Skip override:{entry.FullName}");
@@ -305,7 +305,8 @@ namespace NuStore
                 if(_options.Verbosity)
                     MessageHelper.Info($"Begin restore package:{name}[{version}]");
 
-                if(await DownloadPackage(name, version, Path.Combine(pkgFolder, item.Value.Path)))
+                var storeDirectory = GetStoreDirectory();
+                if (await DownloadPackage(name, version, _options.Flatten ? storeDirectory : Path.Combine(pkgFolder, item.Value.Path)))
                 {
                     count++;
                 }

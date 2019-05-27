@@ -37,6 +37,7 @@ get help info via `nustore --help`
 `-s` `--special` | restore special packages, support regex. separated by semicolon for mutiple
 `--runtime` | .net core runtime version, the defaut value set by deps file, for example netcoreapp2.0/netcoreapp2.1
 `--arch` | x64/x86, by default this value is resolved from platform attribute which declared in deps file
+`--flatten` | restore files directly onto path/package.dll instead of restoring in nested folders (eg. path/x64/netcoreapp2.0/package/1.2.0/lib/netcoreapp2.0/package.dll)
 `--verbosity` | show detailed log
 `--help` | get help info
 
