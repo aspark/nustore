@@ -33,7 +33,7 @@ namespace NuStore
             _http = new HttpClient() { Timeout = TimeSpan.FromSeconds(30) };
         }
 
-        private string GetStoreDirctory()
+        private string GetStoreDirectory()
         {
             if (!string.IsNullOrWhiteSpace(_options?.Directory))
             {
@@ -66,7 +66,7 @@ namespace NuStore
         {
             (string arch, string runtime) = ParseRuntimeInfo(deps);
 
-            return Path.Combine(GetStoreDirctory(), $"{arch}/{runtime}");
+            return Path.Combine(GetStoreDirectory(), $"{arch}/{runtime}");
         }
 
         private string EnsureDepsFileName()

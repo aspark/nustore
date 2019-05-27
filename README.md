@@ -30,14 +30,14 @@ get help info via `nustore --help`
  opt           | desc
 -------------- | -----
 `-p` `--deps` | deps file. default is *.deps.json in current directory
-`-d` `--dir` | diretory packages stored(typically at /usr/local/share/dotnet/store on macOS/Linux and C:/Program Files/dotnet/store on Windows).
-`-f` `--force` | override exists packages
-`--nuget` | set nuget resouce api url. default: https://api.nuget.org/v3/index.json
-`-e` `--exclude` | skip packages, support regex. seprate by semicolon for mutiple
-`-s` `--special` | restore special packages, support regex. seprate by semicolon for mutiple
-`--runtime` | .net core runtime version, the defaut value set by deps file, for excample netcoreapp2.0/netcoreapp2.1
-`--arch` | x64/x86, by defalut this value is resolved from platform attribute which declared in deps file 
-`--verbosity` | show detail log
+`-d` `--dir` | directory packages stored (typically at /usr/local/share/dotnet/store on macOS/Linux and C:/Program Files/dotnet/store on Windows)
+`-f` `--force` | override existing packages, default is false
+`--nuget` | set nuget resource api url. default: https://api.nuget.org/v3/index.json
+`-e` `--exclude` | skip packages, support regex. separated by semicolon for mutiple
+`-s` `--special` | restore special packages, support regex. separated by semicolon for mutiple
+`--runtime` | .net core runtime version, the defaut value set by deps file, for example netcoreapp2.0/netcoreapp2.1
+`--arch` | x64/x86, by default this value is resolved from platform attribute which declared in deps file
+`--verbosity` | show detailed log
 `--help` | get help info
 
 ### example
