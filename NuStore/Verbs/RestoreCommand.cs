@@ -14,7 +14,7 @@ using NuStore.Common;
 
 namespace NuStore
 {
-    internal class RestoreCommand
+    internal class RestoreCommand: ICommand
     {
         static RestoreCommand()
         {

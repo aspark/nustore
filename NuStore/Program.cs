@@ -55,7 +55,15 @@ namespace NuStore
 
         private static object Minify(MinifyOptions opts)
         {
-            MessageHelper.Error("minify publish package developing...");
+            try
+            {
+                new MinifyCommand(opts).Execute().Wait();
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.Error(ex.GetMessage());
+                MessageHelper.Warning("Use \"nustore --help\" for help info...");
+            }
 
             return null;
         }

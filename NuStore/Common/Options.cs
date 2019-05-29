@@ -44,7 +44,7 @@ namespace NuStore.Common
         {
             get
             {
-                yield return new Example("Use test.json to resolve deps, and save packages to d:/packages", new RestoreOptions { DepsFile = "test.json", Directory = "c:/packages" });
+                yield return new Example("Use test.json to resolve deps, and save packages to d:/packages", new RestoreOptions { DepsFile = "test.json", Directory = "d:/packages" });
                 yield return new Example("Skip special package", new RestoreOptions { Exclude = "^microsoft.*;^System.*" });
                 yield return new Example("Only restore the special package", new RestoreOptions { Special = "Microsoft\\.Extensions.Logging", ForceOverride = true });
             }
@@ -60,6 +60,28 @@ namespace NuStore.Common
     [Verb("minify", HelpText = "Minify the publish package(delete the packages which not hosted in nuget)")]
     public class MinifyOptions
     {
-        //todo
+        [Option('d', "dir", HelpText="output directory")]
+        public string Directory { get; set; }
+
+        [Option('v', "verbosity", HelpText = "show detailed log")]//verbose
+        public bool Verbosity { get; set; }
+
+        [Option('k', "kind", HelpText = "specify target assembly kind (library, exe, winexe supported, default is same as first assembly)")]
+        public ILRepacking.ILRepack.Kind? Kind { get; set; }
+
+        [Option("search", HelpText = "adds the path to the search directories for referenced assemblies (can be specified multiple times)")]
+        public string[] SearchDirectories { get; set; }
+
+        [Option("delaysign", HelpText = "sets the key, but don't sign the assembly")]
+        public bool DelaySign { get; set; }
+
+        [Usage]
+        public static IEnumerable<Example> Examples
+        {
+            get
+            {
+                yield return new Example("Minify all dlls in currenty dir to one dll, and save it to d:/packages", new MinifyOptions { Directory = "d:/publish" });
+            }
+        }
     }
 }
