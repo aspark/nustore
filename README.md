@@ -18,7 +18,7 @@ on macOS/Linux and C:/Program Files/dotnet/store on Windows
 
 get help info via `nustore --help`
 
-> dotnet core installed path may be diffrent on linux, for example it may be /usr/share/dotnet on centos7
+> dotnet core installed path may be different on linux, for example it may be /usr/share/dotnet on centos7
 
 
 ## verbs
