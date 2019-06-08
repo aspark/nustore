@@ -2,7 +2,7 @@
   "profiles": {
     "NuStore": {
       "commandName": "Project",
-      "commandLineArgs": "restore --dir=\"e:/nustore\" --deps=\"e:/nustore/test.deps.json\" --exclude=\"^microsoft.*;^System.*\" -s \"System.Data.SqlClient\""
+      "commandLineArgs": "minify --dir=out --kind=0"
     }
   }
 }

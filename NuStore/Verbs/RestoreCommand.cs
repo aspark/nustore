@@ -14,7 +14,7 @@ using NuStore.Common;
 
 namespace NuStore
 {
-    internal class RestoreCommand: ICommand
+    internal class RestoreCommand: DepsCommandBase
     {
         static RestoreCommand()
         {
@@ -28,7 +28,7 @@ namespace NuStore
         {
             _options = options;
 
-            EnsureDepsFileName();
+            EnsureDepsFileName(_options.DepsFile);
 
             _http = new HttpClient() { Timeout = TimeSpan.FromSeconds(30) };
         }
@@ -67,30 +67,6 @@ namespace NuStore
             (string arch, string runtime) = ParseRuntimeInfo(deps);
 
             return Path.Combine(GetStoreDirectory(), $"{arch}/{runtime}");
-        }
-
-        private string EnsureDepsFileName()
-        {
-            string fileName = "";
-            if (!string.IsNullOrWhiteSpace(_options?.DepsFile))
-            {
-                fileName = Path.Combine(Directory.GetCurrentDirectory(), _options.DepsFile);
-                if (!File.Exists(fileName))
-                {
-                    throw new FileNotFoundException($"Can't find deps file:{fileName}");
-                }
-
-                return fileName;
-            }
-
-            fileName = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.deps.json").FirstOrDefault();
-
-            if (string.IsNullOrEmpty(fileName))
-            {
-                throw new FileNotFoundException("Can't find deps file.");
-            }
-
-            return fileName;
         }
 
         ////https://www.nuget.org/api/v2/package/NuGet.Core/2.14.0
@@ -185,13 +161,6 @@ namespace NuStore
             return false;
         }
 
-        private (string name, string version) ParsePackageName(string packageName)
-        {
-            var index = packageName.LastIndexOf('/');
-
-            return (packageName.Substring(0, index), packageName.Substring(index + 1));
-        }
-
         private ConcurrentDictionary<string, Regex[]> _dicReg = new ConcurrentDictionary<string, Regex[]>();
         private bool IsMatch(string regString, string value)
         {
@@ -278,10 +247,9 @@ namespace NuStore
             return (arch, runtime);
         }
 
-        public async Task Execute()
+        public override async Task Execute()
         {
-            var file = EnsureDepsFileName();
-            var deps = JsonConvert.DeserializeObject<ProjectDeps>(File.ReadAllText(file));
+            var (_, deps) = GetDeps(_options.DepsFile);
             
             (string arch, string runtime) = ParseRuntimeInfo(deps);
 

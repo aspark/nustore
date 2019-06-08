@@ -60,16 +60,16 @@ namespace NuStore.Common
     [Verb("minify", HelpText = "Minify the publish package(delete the packages which not hosted in nuget)")]
     public class MinifyOptions
     {
-        [Option('d', "dir", HelpText="output directory")]
+        [Option('d', "dir", HelpText="output directory. default is ./nustored")]
         public string Directory { get; set; }
 
         [Option('v', "verbosity", HelpText = "show detailed log")]//verbose
         public bool Verbosity { get; set; }
 
-        [Option('k', "kind", HelpText = "specify target assembly kind (library, exe, winexe supported, default is same as first assembly)")]
-        public ILRepacking.ILRepack.Kind? Kind { get; set; }
+        [Option('k', "kind", HelpText = "specify target assembly kind (dll, exe, winexe supported, default is same as first assembly)")]//ILRepacking.ILRepack.Kind?
+        public string Kind { get; set; }
 
-        [Option("search", HelpText = "adds the path to the search directories for referenced assemblies (can be specified multiple times)")]
+        [Option("search", Default =new string[0], Separator = ';', HelpText = "adds the path to the search directories for referenced assemblies (can be specified multiple times), separated by ;")]
         public string[] SearchDirectories { get; set; }
 
         [Option("delaysign", HelpText = "sets the key, but don't sign the assembly")]
@@ -80,7 +80,7 @@ namespace NuStore.Common
         {
             get
             {
-                yield return new Example("Minify all dlls in currenty dir to one dll, and save it to d:/packages", new MinifyOptions { Directory = "d:/publish" });
+                yield return new Example("Minify all dlls in currenty dir to one dll, and save it to d:/publish", new MinifyOptions { Directory = "d:/publish" });
             }
         }
     }

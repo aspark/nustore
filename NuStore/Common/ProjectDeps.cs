@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,6 +8,8 @@ namespace NuStore.Common
     internal class ProjectDeps
     {
         public RuntimeTarget RuntimeTarget { get; set; }
+
+        public Dictionary<string, Dictionary<string, JToken>> Targets { get; set; }
 
         public CompilationOptions CompilationOptions { get; set; }
 
