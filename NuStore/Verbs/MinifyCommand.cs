@@ -34,6 +34,8 @@ namespace NuStore
                         throw new Exception($"Can not find dll in current dir:{dll}");
                 }
 
+                MessageHelper.Info($"minify dlls:{string.Join(";", dlls)}");
+
                 var outDir = Path.Combine(currentDir, string.IsNullOrWhiteSpace(_options.Directory) ? "nustored" : _options.Directory);
                 var outFile = Path.Combine(outDir, dlls.First());
 
@@ -58,7 +60,7 @@ namespace NuStore
                 var hashPkgs = new HashSet<string>(pkgs.Skip(1));// hold the main dll
                 RemoveMergedDlls(deps.Targets, hashPkgs);
                 RemoveMergedDlls(deps.Libraries, hashPkgs);
-                File.WriteAllText(Path.Combine(outDir, Path.GetFileName(file)), JsonConvert.SerializeObject(deps), Encoding.UTF8);
+                File.WriteAllText(Path.Combine(outDir, Path.GetFileName(file)), JsonConvert.SerializeObject(deps,new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore }), Encoding.UTF8);
 
                 //copy runtimeconfig
                 CopyFile(currentDir, "appsettings.json", outDir);
@@ -72,7 +74,7 @@ namespace NuStore
 
         private void RemoveMergedDlls<TV>(IDictionary<string, TV> dic, HashSet<string> removeKeys, HashSet<string> skipKeys= null)
         {
-            foreach (var key in dic.Keys)
+            foreach (var key in dic.Keys.ToArray())
             {
                 if (removeKeys.Contains(key) && (skipKeys == null || !skipKeys.Contains(key)))
                     dic.Remove(key);
