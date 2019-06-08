@@ -16,7 +16,11 @@ By default `nustore restore` will load the deps file from current folder,
 and save the packages to /usr/local/share/dotnet/store 
 on macOS/Linux and C:/Program Files/dotnet/store on Windows
 
-get help info via `nustore --help`
+
+by default `nustore minify` will parse ./*.deps.json and merge all  project dlls into [project name].dll, then copy the [project name].dll appsettings.json and runtimeconfig.\* to ./nustored/  
+
+
+get help info via `nustore --help` `nustore restore --help` or `nustore minify --help`
 
 > dotnet core installed path may be different on linux, for example it may be /usr/share/dotnet on centos7
 
@@ -38,11 +42,28 @@ get help info via `nustore --help`
 `--runtime` | .net core runtime version, the defaut value set by deps file, for example netcoreapp2.0/netcoreapp2.1
 `--arch` | x64/x86, by default this value is resolved from platform attribute which declared in deps file
 `--flatten` | restore files directly onto path/package.dll instead of restoring in nested folders (eg. path/x64/netcoreapp2.0/package/1.2.0/lib/netcoreapp2.0/package.dll)
-`--verbosity` | show detailed log
+`-v` `--verbosity` | show detailed log
 `--help` | get help info
+
+## minify options
+
+ opt           | desc
+-------------- | -----
+`-d` `--dir` | output directory. default is ./nustored
+`-c` `--copy` | copy files to output dir, default is appsettings.json. support *.json;appsettings.json
+`-v` `--verbosity` | show detailed log
+`--help` | get help info
+
 
 ### example
 
 Use e:/nustore/test.deps.json file to restore packages to e:/nustore. exclude all packages which start with microsoft
 
-	nustore restore --dir="e:/nustore" --deps="e:/nustore/test.deps.json" --exclude="^microsoft.*;^System.*" -s "Microsoft\.Extensions.Logging"
+``` bash
+nustore restore --dir="e:/nustore" --deps="e:/nustore/test.deps.json" --exclude="^microsoft.*;^System.*" -s "Microsoft\.Extensions.Logging"
+```
+
+Merge dlls into ./out/ and copy *.json and *.exe files to output dir.
+``` bash
+nustore minify --dir out -c *.json;*.exe
+```

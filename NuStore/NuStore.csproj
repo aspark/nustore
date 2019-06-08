@@ -6,7 +6,7 @@
 	<PackAsTool>true</PackAsTool>
 	<ToolCommandName>nustore</ToolCommandName>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.0.7</Version>
+    <Version>1.1.0-rc</Version>
     <PackageProjectUrl>https://github.com/aspark/nustore</PackageProjectUrl>
     <Title>NuStore</Title>
     <Description>NuStore download nuget packages which declared in the *.deps.json, and save to store folder, for minify .net core publish size</Description>
@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.2.1" />
+    <PackageReference Include="CommandLineParser" Version="2.5.0" />
     <PackageReference Include="ILRepack.NETStandard" Version="2.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>

@@ -60,8 +60,11 @@ namespace NuStore.Common
     [Verb("minify", HelpText = "Minify the publish package(delete the packages which not hosted in nuget)")]
     public class MinifyOptions
     {
-        [Option('d', "dir", HelpText="output directory. default is ./nustored")]
+        [Option('d', "dir", HelpText = "output directory. default is ./nustored")]
         public string Directory { get; set; }
+
+        [Option('c', "copy", Separator = ';', HelpText = "copy files to output dir, default is appsettings.json. support *.json, separated by ;")]//, Default = new string[0]
+        public IEnumerable<string> CopyFilters { get; set; }
 
         [Option('v', "verbosity", HelpText = "show detailed log")]//verbose
         public bool Verbosity { get; set; }
@@ -69,8 +72,8 @@ namespace NuStore.Common
         [Option('k', "kind", HelpText = "specify target assembly kind (dll, exe, winexe supported, default is same as first assembly)")]//ILRepacking.ILRepack.Kind?
         public string Kind { get; set; }
 
-        [Option("search", Default =new string[0], Separator = ';', HelpText = "adds the path to the search directories for referenced assemblies (can be specified multiple times), separated by ;")]
-        public string[] SearchDirectories { get; set; }
+        [Option("search", Default = new string[0], Separator = ';', HelpText = "adds the path to the search directories for referenced assemblies (can be specified multiple times), separated by ;")]//
+        public IEnumerable<string> SearchDirectories { get; set; }
 
         [Option("delaysign", HelpText = "sets the key, but don't sign the assembly")]
         public bool DelaySign { get; set; }
@@ -80,7 +83,8 @@ namespace NuStore.Common
         {
             get
             {
-                yield return new Example("Minify all dlls in currenty dir to one dll, and save it to d:/publish", new MinifyOptions { Directory = "d:/publish" });
+                yield return new Example("Minify all dlls in currenty dir to one dll, save it to d:/publish", new MinifyOptions { Directory = "d:/publish" });
+                yield return new Example("Minify all dlls in currenty dir to one dll, save it to ./out and copy *.json/*.exe files to the output dir", new MinifyOptions { Directory = "out", CopyFilters = new string[] {"appsettings.json", "*.exe" } });
             }
         }
     }

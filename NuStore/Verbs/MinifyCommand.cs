@@ -62,11 +62,15 @@ namespace NuStore
                 RemoveMergedDlls(deps.Libraries, hashPkgs);
                 File.WriteAllText(Path.Combine(outDir, Path.GetFileName(file)), JsonConvert.SerializeObject(deps,new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore }), Encoding.UTF8);
 
+                foreach (var filter in (_options.CopyFilters == null || _options.CopyFilters.Count() == 0 ? new[] { "appsettings.json" } : _options.CopyFilters))
+                {
+                    CopyFile(currentDir, filter, outDir);
+                }
+
                 //copy runtimeconfig
-                CopyFile(currentDir, "appsettings.json", outDir);
                 CopyFile(currentDir, "*.runtimeconfig.*", outDir);
 
-                MessageHelper.Successs($"minify completed:{outDir}");
+                MessageHelper.Successs($"minify completed. output:{outDir}");
             }
 
             return Task.CompletedTask;
