@@ -46,8 +46,8 @@ namespace NuStore
             }
             catch (Exception ex)
             {
-                MessageHelper.Error(ex.GetMessage());
-                MessageHelper.Warning("Use \"nustore --help\" for help info...");
+                MessageHelper.Error(ex.ToString());
+                MessageHelper.Warning("Use \"nustore restore --help\" for help info...");
             }
 
             return null;
@@ -61,8 +61,8 @@ namespace NuStore
             }
             catch (Exception ex)
             {
-                MessageHelper.Error(ex.GetMessage());
-                MessageHelper.Warning("Use \"nustore --help\" for help info...");
+                MessageHelper.Error(ex.ToString());
+                MessageHelper.Warning("Use \"nustore minify --help\" for help info...");
             }
 
             return null;

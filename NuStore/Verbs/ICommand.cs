@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using NuStore.Common;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NuStore
@@ -18,6 +20,7 @@ namespace NuStore
     {
         public abstract Task Execute();
     }
+
     internal abstract class DepsCommandBase : CommandBase
     {
         /// <summary>
@@ -25,7 +28,7 @@ namespace NuStore
         /// </summary>
         /// <param name="depsFile">deps file. default is *.deps.json in current directory</param>
         /// <returns></returns>
-        private protected string EnsureDepsFileName(string depsFile = null)
+        protected string EnsureDepsFileName(string depsFile = null)
         {
             string fileName = "";
             if (!string.IsNullOrWhiteSpace(depsFile))
@@ -49,7 +52,7 @@ namespace NuStore
             return fileName;
         }
 
-        private protected (string FileName, ProjectDeps) GetDeps(string depsFile = null)
+        protected (string FileName, ProjectDeps) GetDeps(string depsFile = null)
         {
             var file = EnsureDepsFileName(depsFile);
 
@@ -61,11 +64,32 @@ namespace NuStore
         /// </summary>
         /// <param name="packageName"></param>
         /// <returns></returns>
-        private protected (string name, string version) ParsePackageName(string packageName)
+        protected (string name, string version) ParsePackageName(string packageName)
         {
             var index = packageName.LastIndexOf('/');
+            if (index > -1)
+            {
+                return (packageName.Substring(0, index), packageName.Substring(index + 1));
+            }
 
-            return (packageName.Substring(0, index), packageName.Substring(index + 1));
+            return (packageName, string.Empty);
+        }
+
+        private ConcurrentDictionary<string, Regex[]> _dicReg = new ConcurrentDictionary<string, Regex[]>();
+        protected bool IsMatch(string regString, string value)
+        {
+            if (!string.IsNullOrWhiteSpace(regString))
+            {
+                var regList = _dicReg.GetOrAdd(regString, str => {
+                    return regString
+                    .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => new Regex(s, RegexOptions.IgnoreCase)).ToArray();
+                });
+
+                return regList.Any(r => r.IsMatch(value));
+            }
+
+            return false;
         }
     }
 }

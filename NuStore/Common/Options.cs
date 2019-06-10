@@ -18,6 +18,9 @@ namespace NuStore.Common
         [Option('f', "force", HelpText = "override existing packages, default is false")]
         public bool ForceOverride { get; set; }
 
+        [Option('y', "yes", HelpText = "yes to all confirm")]
+        public bool Yes { get; set; }
+
         [Option("nuget", HelpText = "set nuget resource api url. default: https://api.nuget.org/v3/index.json")]
         public string NugetServiceIndex { get; set; }
 
@@ -63,20 +66,29 @@ namespace NuStore.Common
         [Option('d', "dir", HelpText = "output directory. default is ./nustored")]
         public string Directory { get; set; }
 
-        [Option('c', "copy", Separator = ';', HelpText = "copy files to output dir, default is appsettings.json. support *.json, separated by ;")]//, Default = new string[0]
+        [Option('c', "copy", Separator = ';', HelpText = "copy files to output dir, default is appsettings.json. support wildcard: *.exe;appsettings.json, separated by semicolon")]//, Default = new string[0]
         public IEnumerable<string> CopyFilters { get; set; }
 
-        [Option('v', "verbosity", HelpText = "show detailed log")]//verbose
-        public bool Verbosity { get; set; }
+        [Option('a', "all", HelpText = "merge all dlls in current dir")]
+        public bool MergeAll { get; set; }
+
+        [Option("exclude", HelpText = "exclude dlls, support regex. separated by semicolon for mutiple")]
+        public string Exclude { get; set; }
 
         [Option('k', "kind", HelpText = "specify target assembly kind (dll, exe, winexe supported, default is same as first assembly)")]//ILRepacking.ILRepack.Kind?
         public string Kind { get; set; }
 
-        [Option("search", Default = new string[0], Separator = ';', HelpText = "adds the path to the search directories for referenced assemblies (can be specified multiple times), separated by ;")]//
+        [Option("search", Default = new string[0], Separator = ';', HelpText = "adds the path to the search directories for referenced assemblies (can be specified multiple times), separated by semicolon")]//
         public IEnumerable<string> SearchDirectories { get; set; }
 
         [Option("delaysign", HelpText = "sets the key, but don't sign the assembly")]
         public bool DelaySign { get; set; }
+
+        [Option("debug", HelpText = "enable symbol file generation")]
+        public bool DebugInfo { get; set; }
+
+        [Option('v', "verbosity", HelpText = "show detailed log")]//verbose
+        public bool Verbosity { get; set; }
 
         [Usage]
         public static IEnumerable<Example> Examples

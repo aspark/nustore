@@ -62,7 +62,7 @@ namespace NuStore
             }
         }
 
-        private string GetPackageDirctory(ProjectDeps deps)
+        private string GetPackageDirectory(ProjectDeps deps)
         {
             (string arch, string runtime) = ParseRuntimeInfo(deps);
 
@@ -100,7 +100,7 @@ namespace NuStore
 
         private async Task<bool> DownloadPackage(string name, string version, string libFolder)
         {
-            if (!_options.Flatten && Directory.Exists(libFolder) && !_options.ForceOverride)
+            if (Directory.Exists(libFolder) && !_options.Flatten && !_options.ForceOverride)//if flatten, the libFolder is parent dir,so continue download
             {
                 MessageHelper.Warning($"Skip override:{libFolder}");
                 return false;
@@ -156,23 +156,6 @@ namespace NuStore
             catch(Exception ex)
             {
                 MessageHelper.Error("Restore failed:"+ ex.Message);
-            }
-
-            return false;
-        }
-
-        private ConcurrentDictionary<string, Regex[]> _dicReg = new ConcurrentDictionary<string, Regex[]>();
-        private bool IsMatch(string regString, string value)
-        {
-            if(!string.IsNullOrWhiteSpace(regString))
-            {
-                var regList = _dicReg.GetOrAdd(regString, str => {
-                    return regString
-                    .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(s => new Regex(s, RegexOptions.IgnoreCase)).ToArray();
-                });
-
-                return regList.Any(r => r.IsMatch(value));
             }
 
             return false;
@@ -253,8 +236,21 @@ namespace NuStore
             
             (string arch, string runtime) = ParseRuntimeInfo(deps);
 
-            var pkgFolder = GetPackageDirctory(deps);
-            MessageHelper.Warning($"Retore packages to {pkgFolder}");
+            var storeDirectory = GetStoreDirectory();
+            MessageHelper.Warning($"Retore packages to {storeDirectory}");
+
+            if (!_options.Yes && !_options.ForceOverride)
+            {
+                Console.Write($"{Environment.NewLine}Confirm restore?(y/n)");
+                if (Console.ReadKey().KeyChar != 'y' && Console.ReadKey().KeyChar != 'Y')
+                {
+                    Console.Write(Environment.NewLine);
+                    MessageHelper.Error($"exit restore.");
+                    return;
+                }
+            }
+
+            var pkgFolder = GetPackageDirectory(deps);//append arch/runtime
 
             var count = 0;
             foreach (var item in deps.Libraries.AsParallel())
@@ -273,7 +269,6 @@ namespace NuStore
                 if(_options.Verbosity)
                     MessageHelper.Info($"Begin restore package:{name}[{version}]");
 
-                var storeDirectory = GetStoreDirectory();
                 if (await DownloadPackage(name, version, _options.Flatten ? storeDirectory : Path.Combine(pkgFolder, item.Value.Path)))
                 {
                     count++;

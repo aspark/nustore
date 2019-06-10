@@ -2,7 +2,7 @@
   "profiles": {
     "NuStore": {
       "commandName": "Project",
-      "commandLineArgs": "minify --dir=out --kind=0"
+      "commandLineArgs": "minify --dir=out --kind=dll --debug"
     }
   }
 }

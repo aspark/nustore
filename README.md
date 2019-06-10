@@ -36,6 +36,7 @@ get help info via `nustore --help` `nustore restore --help` or `nustore minify -
 `-p` `--deps` | deps file. default is *.deps.json in current directory
 `-d` `--dir` | directory packages stored (typically at /usr/local/share/dotnet/store on macOS/Linux and C:/Program Files/dotnet/store on Windows)
 `-f` `--force` | override existing packages, default is false
+`-y` `--yes` | yes to all confirm, default is false
 `--nuget` | set nuget resource api url. default: https://api.nuget.org/v3/index.json
 `-e` `--exclude` | skip packages, support regex. separated by semicolon for mutiple
 `-s` `--special` | restore special packages, support regex. separated by semicolon for mutiple
@@ -50,7 +51,13 @@ get help info via `nustore --help` `nustore restore --help` or `nustore minify -
  opt           | desc
 -------------- | -----
 `-d` `--dir` | output directory. default is ./nustored
-`-c` `--copy` | copy files to output dir, default is appsettings.json. support *.json;appsettings.json
+`-c` `--copy` | copy files to output dir, default is appsettings.json. support wildcard: *.exe;appsettings.json, separated by semicolon
+`-a` `--all` | merge all dlls in current dir
+`--exclude` | exclude dlls, support regex. separated by semicolon for mutiple
+`-k` `--kind` | specify target assembly kind (dll, exe, winexe supported, default is same as first assembly)
+`--search` | adds the path to the search directories for referenced assemblies (can be specified multiple times), separated by semicolon
+`--delaysign` | sets the key, but don't sign the assembly
+`--debug` | enable symbol file generation
 `-v` `--verbosity` | show detailed log
 `--help` | get help info
 
