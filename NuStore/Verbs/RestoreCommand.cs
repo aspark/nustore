@@ -237,15 +237,15 @@ namespace NuStore
             (string arch, string runtime) = ParseRuntimeInfo(deps);
 
             var storeDirectory = GetStoreDirectory();
-            MessageHelper.Warning($"Retore packages to {storeDirectory}");
+            MessageHelper.Info($"begin restore packages/dlls to {storeDirectory}");
 
             if (!_options.Yes && !_options.ForceOverride)
             {
-                Console.Write($"{Environment.NewLine}Confirm restore?(y/n)");
+                MessageHelper.WarningInline($"continue restore?(y/n):");//{Environment.NewLine}
                 if (Console.ReadKey().KeyChar != 'y' && Console.ReadKey().KeyChar != 'Y')
                 {
                     Console.Write(Environment.NewLine);
-                    MessageHelper.Error($"exit restore.");
+                    MessageHelper.Error($"exit restore...");
                     return;
                 }
             }

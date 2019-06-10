@@ -20,6 +20,13 @@ namespace NuStore.Common
             Console.ForegroundColor = _originForegroundColor;
         }
 
+        public static void WarningInline(string msg, params object[] args)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(msg, args);
+            Console.ForegroundColor = _originForegroundColor;
+        }
+
         public static void Error(string msg, params object[] args)
         {
             Console.ForegroundColor = ConsoleColor.Red;
